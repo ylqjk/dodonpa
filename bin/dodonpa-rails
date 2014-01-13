@@ -1,0 +1,34 @@
+#!/bin/sh
+help_default() {
+    usage "rails[:foreman] <name>" "$@"
+}
+
+cmd_default() {
+    installed 'bundle' '  cf. gem i bundler'
+
+    if [ $# -lt 1 ]; then
+        help_default
+        exit 1
+    fi
+
+    if ! echo "$1" | grep -q "^[a-z][a-z0-9_]*$"; then
+        help_default "Invalid name: '$1'"
+        exit 1
+    fi
+
+    GEM="source 'https://rubygems.org'\n\ngem 'rails'"
+    [ ! -z $2 ] && GEM="$GEM, '$2'"
+    BUNDLE_PATH='vendor/bundle'
+
+    mkdir $1
+    cd $1
+    echo $GEM > Gemfile
+    bundle install --path $BUNDLE_PATH --without production
+    bundle exec rails new . -f -T --skip-bundle
+    echo "/$BUNDLE_PATH" >> .gitignore
+}
+
+cmd_foreman() {
+    installed 'foreman' '  cf. gem i foreman'
+    cmd_default "$@"
+}

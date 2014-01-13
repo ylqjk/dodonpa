@@ -1,0 +1,75 @@
+#!/bin/sh
+
+DODONPA_CMD=$(basename $0)
+DODONPA_DIR=$(dirname $0)
+
+puts() {
+    [ "$1" != "" ] && echo $1
+}
+
+usage() {
+    puts "$2" && echo
+    echo "usage: $DODONPA_CMD $1"
+}
+
+root_usage() {
+    usage "<subcommand>[:<action>] ..." "$1"
+    echo
+    echo "Available subcommands are:"
+    for CMD in `ls $DODONPA_DIR/$DODONPA_CMD-*`
+    do
+        SUBCMD=$(basename $CMD | sed -e "s/^$DODONPA_CMD-//")
+        echo "   $SUBCMD"
+    done
+}
+
+installed() {
+    if ! type $1 >/dev/null 2>&1; then
+        echo "$1 not found"
+        [ "$2" != "" ] && echo && echo "$2"
+        exit 1
+    fi
+}
+
+main() {
+    if [ $# -lt 1 ]; then
+        root_usage
+        exit 1
+    fi
+
+    SUBCMD=$(echo "$1" | cut -f1 -d':')
+    ACTION=$(echo "$1" | sed -e "s/^$SUBCMD//" | cut -f2- -d':')
+    shift
+
+    if [ ! -e "$DODONPA_DIR/$DODONPA_CMD-$SUBCMD" ]; then
+        root_usage "Unknown subcommand: '$SUBCMD'"
+        exit 1
+    fi
+
+    . "$DODONPA_DIR/$DODONPA_CMD-$SUBCMD"
+
+    if [ "$ACTION" = "" ]; then
+        ACTION="default"
+    fi
+
+    if [ "$1" = "help" ]; then
+        shift
+        if type "help_$ACTION" >/dev/null 2>&1; then
+            help_$ACTION "$@"
+        elif type "help_default" >/dev/null 2>&1; then
+            help_default "$@"
+        else
+            root_usage "Help not found."
+            exit 1
+        fi
+    else
+        if type "cmd_$ACTION" >/dev/null 2>&1; then
+            cmd_$ACTION "$@"
+        else
+            root_usage "Unknown action: '$ACTION'"
+            exit 1
+        fi
+    fi
+}
+
+main "$@"
