@@ -31,6 +31,12 @@ installed() {
     fi
 }
 
+gem_installed() {
+    NAME=$1
+    [ "$2" != "" ] && NAME=$2
+    installed "$1" "   $ gem i $NAME"
+}
+
 main() {
     if [ $# -lt 1 ]; then
         root_usage

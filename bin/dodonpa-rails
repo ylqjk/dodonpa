@@ -1,34 +1,54 @@
 #!/bin/sh
-help_default() {
-    usage "rails[:foreman] <name>" "$@"
+help_foreman() {
+    usage "rails:foreman [<name>] [<version>]", "$@"
 }
 
-cmd_default() {
-    installed 'bundle' '  cf. gem i bundler'
+cmd_foreman() {
+    gem_installed 'foreman'
 
-    if [ $# -lt 1 ]; then
-        help_default
-        exit 1
+    if [ $# -gt 0 ]; then
+        cmd_default "$@"
     fi
 
+    # TODO
+}
+
+help_new() {
+    usage "rails:new [<version>]" "$@"
+}
+
+cmd_new() {
+    gem_installed 'bundle' 'bundler'
+
+    GEM="source 'https://rubygems.org'\n\ngem 'rails'"
+    [ ! -z $1 ] && GEM="$GEM, '$1'"
+    BUNDLE_PATH='vendor/bundle'
+
+    [ ! -f Gemfile ] &&
+    echo $GEM > Gemfile &&
+    bundle install --path $BUNDLE_PATH --without production &&
+    bundle exec rails new . -f -T --skip-bundle &&
+    echo "/$BUNDLE_PATH" >> .gitignore
+}
+
+help_default() {
+    usage "rails[:foreman] <name> [<version>]" "$@"
+}
+
+cmd_mkdir() {
     if ! echo "$1" | grep -q "^[a-z][a-z0-9_]*$"; then
         help_default "Invalid name: '$1'"
         exit 1
     fi
 
-    GEM="source 'https://rubygems.org'\n\ngem 'rails'"
-    [ ! -z $2 ] && GEM="$GEM, '$2'"
-    BUNDLE_PATH='vendor/bundle'
-
-    mkdir $1
-    cd $1
-    echo $GEM > Gemfile
-    bundle install --path $BUNDLE_PATH --without production
-    bundle exec rails new . -f -T --skip-bundle
-    echo "/$BUNDLE_PATH" >> .gitignore
+    mkdir $1 && cd $1
 }
 
-cmd_foreman() {
-    installed 'foreman' '  cf. gem i foreman'
-    cmd_default "$@"
+cmd_default() {
+    if [ $# -lt 1 ]; then
+        help_default
+        exit 1
+    fi
+
+    cmd_mkdir "$@" && shift && cmd_new "$@"
 }
