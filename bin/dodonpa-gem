@@ -15,13 +15,16 @@ cmd_spec() {
 
     SPEC_HELPER="require 'rubygems'"
     echo $SPEC_HELPER > spec/spec_helper.rb
-    SPEC_GEM="require 'spec_helper';require '${FILENAME}';;describe ${CLASSNAME} do;  it { should be_true };end"
+    SPEC_GEM="require 'spec_helper';require '${FILENAME}';;describe ${CLASSNAME} do;it { should be_true };end"
     echo $SPEC_GEM > spec/${FILENAME}_spec.rb
+    sed -i '' -e 's/it {/  it {/g' spec/${FILENAME}_spec.rb
     sed -i '' -e "s/;/${LF}/g" spec/${FILENAME}_spec.rb
 
     ADD_RAKE='spec.add_development_dependency "rake"'
     ADD_RSPEC='spec.add_development_dependency "rspec"'
     sed -i '' -e "s/$ADD_RAKE/$ADD_RAKE$LF  $ADD_RSPEC/" $GEMSPEC
+
+    echo '--color' >> .rspec
 }
 
 help_new() {
