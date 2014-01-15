@@ -1,0 +1,48 @@
+#!/bin/sh
+help_spec() {
+    usage 'gem:spec', "$@"
+}
+
+cmd_spec() {
+    LF=$(printf '\\\012_')
+    LF=${LF%_}
+
+    GEMSPEC=$(ls *.gemspec)
+    FILENAME=$(grep -o '[a-zA-Z0-9_]*/version' $GEMSPEC | sed -e 's/\/version$//')
+    CLASSNAME=$(grep -o '[a-zA-Z0-9_]*::VERSION' $GEMSPEC | sed -e 's/::VERSION$//')
+
+    mkdir spec
+
+    SPEC_HELPER="require 'rubygems'"
+    echo $SPEC_HELPER > spec/spec_helper.rb
+    SPEC_GEM="require 'spec_helper';require '${FILENAME}';;describe ${CLASSNAME} do;  it { should be_true };end"
+    echo $SPEC_GEM > spec/${FILENAME}_spec.rb
+    sed -i '' -e "s/;/${LF}/g" spec/${FILENAME}_spec.rb
+
+    ADD_RAKE='spec.add_development_dependency "rake"'
+    ADD_RSPEC='spec.add_development_dependency "rspec"'
+    sed -i '' -e "s/$ADD_RAKE/$ADD_RAKE$LF  $ADD_RSPEC/" $GEMSPEC
+}
+
+help_new() {
+    usage 'gem:new <name>' "$@"
+}
+
+cmd_new() {
+    gem_installed 'bundle' 'bundler'
+
+    bundle gem $1 && cd $1
+}
+
+help_default() {
+    usage 'gem <name>' "$@"
+}
+
+cmd_default() {
+    if [ $# -lt 1 ]; then
+        help_default
+        exit 1
+    fi
+
+    cmd_new "$@" && cmd_spec && git add *.gemspec spec
+}
