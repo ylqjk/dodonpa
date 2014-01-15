@@ -21,7 +21,7 @@ cmd_new() {
     gem_installed 'bundle' 'bundler'
 
     GEM="source 'https://rubygems.org'\n\ngem 'rails'"
-    [ ! -z $1 ] && GEM="$GEM, '$1'"
+    [ ! -z $1 ] && GEM="${GEM}, '${1}'"
     BUNDLE_PATH='vendor/bundle'
 
     [ ! -f Gemfile ] &&
@@ -37,7 +37,7 @@ help_default() {
 
 cmd_mkdir() {
     if ! echo "$1" | grep -q "^[a-z][a-z0-9_]*$"; then
-        help_default "Invalid name: '$1'"
+        help_default "Invalid name: '${1}'"
         exit 1
     fi
 

@@ -9,7 +9,7 @@ puts() {
 
 usage() {
     puts "$2" && echo
-    echo "usage: $DODONPA_CMD $1"
+    echo "usage: ${DODONPA_CMD} ${1}"
 }
 
 root_usage() {
@@ -18,14 +18,14 @@ root_usage() {
     echo "Available subcommands are:"
     for CMD in `ls $DODONPA_DIR/$DODONPA_CMD-*`
     do
-        SUBCMD=$(basename $CMD | sed -e "s/^$DODONPA_CMD-//")
-        echo "   $SUBCMD"
+        SUBCMD=$(basename $CMD | sed -e "s/^${DODONPA_CMD}-//")
+        echo "   ${SUBCMD}"
     done
 }
 
 installed() {
     if ! type $1 >/dev/null 2>&1; then
-        echo "$1 not found"
+        echo "${1} not found"
         [ "$2" != "" ] && echo && echo "$2"
         exit 1
     fi
@@ -34,7 +34,7 @@ installed() {
 gem_installed() {
     NAME=$1
     [ "$2" != "" ] && NAME=$2
-    installed "$1" "   $ gem i $NAME"
+    installed "$1" "   $ gem i ${NAME}"
 }
 
 main() {
@@ -44,15 +44,15 @@ main() {
     fi
 
     SUBCMD=$(echo "$1" | cut -f1 -d':')
-    ACTION=$(echo "$1" | sed -e "s/^$SUBCMD//" | cut -f2- -d':')
+    ACTION=$(echo "$1" | sed -e "s/^${SUBCMD}//" | cut -f2- -d':')
     shift
 
-    if [ ! -e "$DODONPA_DIR/$DODONPA_CMD-$SUBCMD" ]; then
-        root_usage "Unknown subcommand: '$SUBCMD'"
+    if [ ! -e "${DODONPA_DIR}/${DODONPA_CMD}-${SUBCMD}" ]; then
+        root_usage "Unknown subcommand: '${SUBCMD}'"
         exit 1
     fi
 
-    . "$DODONPA_DIR/$DODONPA_CMD-$SUBCMD"
+    . "${DODONPA_DIR}/${DODONPA_CMD}-${SUBCMD}"
 
     if [ "$ACTION" = "" ]; then
         ACTION="default"
@@ -60,8 +60,8 @@ main() {
 
     if [ "$1" = "help" ]; then
         shift
-        if type "help_$ACTION" >/dev/null 2>&1; then
-            help_$ACTION "$@"
+        if type "help_${ACTION}" >/dev/null 2>&1; then
+            help_${ACTION} "$@"
         elif type "help_default" >/dev/null 2>&1; then
             help_default "$@"
         else
@@ -69,10 +69,10 @@ main() {
             exit 1
         fi
     else
-        if type "cmd_$ACTION" >/dev/null 2>&1; then
-            cmd_$ACTION "$@"
+        if type "cmd_${ACTION}" >/dev/null 2>&1; then
+            cmd_${ACTION} "$@"
         else
-            root_usage "Unknown action: '$ACTION'"
+            root_usage "Unknown action: '${ACTION}'"
             exit 1
         fi
     fi
