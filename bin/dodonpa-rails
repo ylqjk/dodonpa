@@ -1,6 +1,6 @@
 #!/bin/sh
 help_foreman() {
-    usage "rails:foreman [<name>] [<version>]", "$@"
+    usage 'rails:foreman [<name>] [<version>]', "$@"
 }
 
 cmd_foreman() {
@@ -14,7 +14,7 @@ cmd_foreman() {
 }
 
 help_new() {
-    usage "rails:new [<version>]" "$@"
+    usage 'rails:new [<version>]' "$@"
 }
 
 cmd_new() {
@@ -32,7 +32,7 @@ cmd_new() {
 }
 
 help_default() {
-    usage "rails[:foreman] <name> [<version>]" "$@"
+    usage 'rails[:foreman] <name> [<version>]' "$@"
 }
 
 cmd_mkdir() {
