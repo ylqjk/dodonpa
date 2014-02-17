@@ -20,7 +20,7 @@ help_new() {
 cmd_new() {
     gem_installed 'bundle' 'bundler'
 
-    GEM="source 'https://rubygems.org'\n\ngem 'rails'"
+    GEM="source 'https://rubygems.org'${LF}\ngem 'rails'"
     [ ! -z $1 ] && GEM="${GEM}, '${1}'"
     BUNDLE_PATH='vendor/bundle'
 
@@ -28,7 +28,7 @@ cmd_new() {
     echo $GEM > Gemfile &&
     bundle install --path $BUNDLE_PATH --without production &&
     bundle exec rails new . -f -T --skip-bundle &&
-    echo "/$BUNDLE_PATH" >> .gitignore
+    echo "/${BUNDLE_PATH}" >> .gitignore
 }
 
 help_default() {
@@ -36,7 +36,7 @@ help_default() {
 }
 
 cmd_mkdir() {
-    if ! echo "$1" | grep -q "^[a-z][a-z0-9_]*$"; then
+    if ! echo "$1" | grep -q '^[a-z][a-z0-9_]*$'; then
         help_default "Invalid name: '${1}'"
         exit 1
     fi

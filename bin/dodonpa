@@ -4,7 +4,7 @@ DODONPA_CMD=$(basename $0)
 DODONPA_DIR=$(dirname $0)
 
 puts() {
-    [ "$1" != "" ] && echo $1
+    [ "$1" != '' ] && echo $1
 }
 
 usage() {
@@ -13,10 +13,10 @@ usage() {
 }
 
 root_usage() {
-    usage "<subcommand>[:<action>] ..." "$1"
+    usage '<subcommand>[:<action>] ...' "$1"
     echo
-    echo "Available subcommands are:"
-    for CMD in `ls $DODONPA_DIR/$DODONPA_CMD-*`
+    echo 'Available subcommands are:'
+    for CMD in `ls ${DODONPA_DIR}/${DODONPA_CMD}-*`
     do
         SUBCMD=$(basename $CMD | sed -e "s/^${DODONPA_CMD}-//")
         echo "   ${SUBCMD}"
@@ -26,14 +26,14 @@ root_usage() {
 installed() {
     if ! type $1 >/dev/null 2>&1; then
         echo "${1} not found"
-        [ "$2" != "" ] && echo && echo "$2"
+        [ "$2" != '' ] && echo && echo "$2"
         exit 1
     fi
 }
 
 gem_installed() {
     NAME=$1
-    [ "$2" != "" ] && NAME=$2
+    [ "$2" != '' ] && NAME=$2
     installed "$1" "   $ gem i ${NAME}"
 }
 
@@ -54,18 +54,18 @@ main() {
 
     . "${DODONPA_DIR}/${DODONPA_CMD}-${SUBCMD}"
 
-    if [ "$ACTION" = "" ]; then
-        ACTION="default"
+    if [ "$ACTION" = '' ]; then
+        ACTION='default'
     fi
 
-    if [ "$1" = "help" ]; then
+    if [ "$1" = 'help' ]; then
         shift
         if type "help_${ACTION}" >/dev/null 2>&1; then
             help_${ACTION} "$@"
-        elif type "help_default" >/dev/null 2>&1; then
+        elif type 'help_default' >/dev/null 2>&1; then
             help_default "$@"
         else
-            root_usage "Help not found."
+            root_usage 'Help not found.'
             exit 1
         fi
     else
