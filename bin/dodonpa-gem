@@ -24,6 +24,9 @@ cmd_spec() {
     ADD_RSPEC='spec.add_development_dependency "rspec"'
     sed -i '' -e "s/$ADD_RAKE/$ADD_RAKE$LF  $ADD_RSPEC/" $GEMSPEC
 
+    sed -i '' -e "s/\"/'/g" $GEMSPEC Rakefile lib/*.rb lib/*/*.rb
+    sed -i '' -e "s/'\\\\x0'/\"\\\\x0\"/g" $GEMSPEC
+
     echo '--color' >> .rspec
 }
 
@@ -48,5 +51,5 @@ cmd_default() {
         exit 1
     fi
 
-    cmd_new "$@" && cmd_spec && git add *.gemspec spec
+    cmd_new "$@" && cmd_spec
 }
