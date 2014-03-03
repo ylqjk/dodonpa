@@ -1,0 +1,20 @@
+{
+  "name": "{%name%}",
+  "version": "0.0.0",
+  "authors": [
+    "{%author%} <{%mail%}>"
+  ],
+  "description": "TODO: Write a longer description.",
+  "main": "dist/{%name%}.js",
+  "keywords": [
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

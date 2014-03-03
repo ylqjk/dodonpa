@@ -1,0 +1,29 @@
+#!/bin/sh
+help_new() {
+    usage 'grunt:new <name>' "$@"
+}
+
+cmd_new() {
+    author=$(git config user.name)
+    mail=$(git config user.email)
+
+    cp -r "$(dirname $DODONPA_DIR)/template/grunt" $1 && cd $1
+    mkdir src
+    touch "src/${1}.coffee"
+    sed -i '' -e "s/{%name%}/${1}/g" *.json
+    sed -i '' -e "s/{%author%}/${author}/g" *.json
+    sed -i '' -e "s/{%mail%}/${mail}/g" *.json
+}
+
+help_default() {
+    usage 'grunt <name>' "$@"
+}
+
+cmd_default() {
+    if [ $# -lt 1 ]; then
+        help_default
+        exit 1
+    fi
+
+    cmd_new "$@"
+}
