@@ -10,6 +10,9 @@ cmd_new() {
     cp -r "$(dirname $DODONPA_DIR)/template/grunt" $1 && cd $1
     mkdir src
     touch "src/${1}.coffee"
+    mkdir test
+    touch "test/${1}_spec.coffee"
+
     sed -i '' -e "s/{%name%}/${1}/g" *.json
     sed -i '' -e "s/{%author%}/${author}/g" *.json
     sed -i '' -e "s/{%mail%}/${mail}/g" *.json
